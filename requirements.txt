@@ -1,0 +1,9 @@
+requests==2.22.0
+redis
+boto3
+dramatiq
+fastapi
+apscheduler
+uvicorn
+gunicorn
+twilio
