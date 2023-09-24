@@ -41,7 +41,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.GIT_SHORT_HASH }}
+          image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.GIT_SHORT_HASH }}
 
       - name: Show Task Definition to Deploy
         run: cat ${{ steps.task-def.outputs.task-definition }}
