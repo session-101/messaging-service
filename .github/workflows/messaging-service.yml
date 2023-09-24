@@ -1,0 +1,55 @@
+name: messaging-service-github-actions
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
+
+env:
+  AWS_REGION: "eu-west-1"
+  ECS_CLUSTER: "AppsCluster"
+  ECS_SERVICE: "messaging-service"
+  ECR_REPOSITORY: "messaging-service"
+  TASK_DEFINITION: "messaging-service"
+  CONTAINER_NAME: "messaging-service"
+
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set Git Hash
+        run: echo "GIT_SHORT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set ENV Variables DEV
+        run: |
+          echo "AWS_ACCOUNT_ID=${{ secrets.DEV_AWS_ACCOUNT_ID }}" >> $GITHUB_ENV
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image
+        id: docker
+        uses: mr-smithers-excellent/docker-build-push@v5
+        with:
+          image: ${{ env.ECR_REPOSITORY }}
+          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
+          tags: ${{ env.GIT_SHORT_HASH }}, latest_${{ env.ENV }}
+          dockerfile: Dockerfile
+
+      - name: Fill in the new image ID in the Amazon ECS Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.GIT_SHORT_HASH }}
+
+      - name: Show Task Definition to Deploy
+        run: cat ${{ steps.task-def.outputs.task-definition }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true

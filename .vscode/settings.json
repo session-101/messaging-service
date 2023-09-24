@@ -1,8 +1,5 @@
 {
     "scm.providerCountBadge": "visible",
     "editor.minimap.autohide": false,
-    "files.exclude": {
-        "**/.git": false
-    },
     "search.useParentIgnoreFiles": true
 }
