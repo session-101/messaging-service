@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 
 env:
-  AWS_REGION: "eu-west-1"
+  AWS_REGION: "eu-east-1"
   ECS_CLUSTER: "AppsCluster"
   ECS_SERVICE: "messaging-service"
   ECR_REPOSITORY: "messaging-service"
@@ -31,8 +31,8 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: ${{ env.ECR_REPOSITORY }}
-          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
-          tags: ${{ env.GIT_SHORT_HASH }}, latest_${{ env.ENV }}
+          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-east-1.amazonaws.com
+          tags: ${{ env.GIT_SHORT_HASH }}, latest
           dockerfile: Dockerfile
 
       - name: Fill in the new image ID in the Amazon ECS Task Definition
