@@ -13,6 +13,8 @@
 
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
 
+WORKDIR /home 
+
 COPY ./requirements.txt /home/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /home/requirements.txt
