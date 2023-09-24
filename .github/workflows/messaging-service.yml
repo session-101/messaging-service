@@ -11,7 +11,7 @@ env:
   CONTAINER_NAME: "messaging-service"
 
 jobs:
-  check-bats-version:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
