@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 
 env:
-  AWS_REGION: "eu-east-1"
+  AWS_REGION: "us-east-1"
   ECS_CLUSTER: "AppsCluster"
   ECS_SERVICE: "messaging-service"
   ECR_REPOSITORY: "messaging-service"
@@ -31,7 +31,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@v5
         with:
           image: ${{ env.ECR_REPOSITORY }}
-          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-east-1.amazonaws.com
+          registry: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
           tags: ${{ env.GIT_SHORT_HASH }}, latest
           dockerfile: Dockerfile
 
@@ -41,7 +41,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.eu-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.GIT_SHORT_HASH }}
+          image: ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.GIT_SHORT_HASH }}
 
       - name: Show Task Definition to Deploy
         run: cat ${{ steps.task-def.outputs.task-definition }}
