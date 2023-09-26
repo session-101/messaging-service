@@ -1,2 +1,6 @@
 **/.DS_Store
 **/__pycache__
+**/controllers/__pycache__
+**/models/__pycache__
+**/routers/__pycache__
+**/store/__pycache__
