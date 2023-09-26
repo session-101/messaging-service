@@ -1,6 +1,7 @@
 import json
 import logging
 import random
+import os
 from twilio.rest import Client
 
 logger = logging.getLogger(__name__)
@@ -8,8 +9,8 @@ list_of_messages = json.loads(open('app/store/messages.json').read())
 read_messages = []
 
 def getTwilioClient():
-    account_sid = 'ACe961eff7539e2fef6d26045fa3f4d23b'
-    auth_token = 'a4b4ade582a76429b805c20ce61a1fb6'
+    account_sid = os.getenv('ACCOUNT_ID')
+    auth_token = os.getenv('AUTH_TOKEN')
     return Client(account_sid, auth_token)
 
 def send_message(message, from_number, to_number):
@@ -22,7 +23,6 @@ def send_message(message, from_number, to_number):
 class MessagesController:
     def send_whatsapp_message(message_body, to_number='+27749354595', from_number='+14155238886'):
         # pick random message
-        logging.info('called---------------')
         message = random.choice(list_of_messages)
         if message not in read_messages: 
             response = send_message(message, from_number, to_number)
